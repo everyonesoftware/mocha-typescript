@@ -1,13 +1,13 @@
 {
   "name": "@everyonesoftware/mocha-typescript",
   "displayName": "Mocha TypeScript Library",
-  "description": "A collection of types used for writing and invoking tests.",
+  "description": "A collection of types that help with writing TypeScript tests using the TestRunner framework using Mocha.",
   "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/everyonesoftware/mocha-typescript"
   },
-  "version": "1.0.0",
+  "version": "2.0.0",
   "module": "outputs/package/index.esm.js",
   "main": "outputs/package/index.js",
   "types": "outputs/package/index.d.ts",
