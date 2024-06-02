@@ -1,6 +1,7 @@
 import { PreConditionError } from "@everyonesoftware/base-typescript";
 import { Test, TestRunner } from "@everyonesoftware/test-typescript";
-import { AssertTest, MochaTestRunner } from "../sources";
+import { AssertTest } from "../sources";
+import { createTestRunner } from "./tests";
 import { AssertionError } from "assert";
 
 export function test(runner: TestRunner): void
@@ -149,4 +150,4 @@ export function test(runner: TestRunner): void
         });
     });
 }
-test(MochaTestRunner.create());
+test(createTestRunner());
