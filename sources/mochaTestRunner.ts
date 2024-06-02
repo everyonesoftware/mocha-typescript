@@ -162,13 +162,15 @@ export class MochaTestRunner implements TestRunner
         }
         Pre.condition.assertNotUndefinedAndNotNull(testAction, "testAction");
 
-        if (TestRunner.shouldRun(skip))
+        test(testName, async () =>
         {
-            test(testName, async () =>
+            if (TestRunner.shouldSkip(skip))
             {
-                await testAction(AssertTest.create());
-            });
-        }
+                this.skip();
+            }
+
+            await testAction(AssertTest.create());
+        });
     }
 
     public andList(values: unknown[] | Iterable<unknown>): string
