@@ -85,13 +85,18 @@ export class MochaTestRunner implements TestRunner
 
         this.assertNoCurrentTest();
 
-        if (TestRunner.shouldRun(skip))
+        suite(testGroupName, function()
         {
-            suite(testGroupName, () =>
+            if (TestRunner.shouldSkip(skip))
             {
-                testAction();
-            });
-        }
+                before(function()
+                {
+                    this.skip();
+                });
+            }
+
+            testAction();
+        });
     }
 
     public test(testName: string, testAction: (test: Test) => void): void;
@@ -116,22 +121,25 @@ export class MochaTestRunner implements TestRunner
 
         this.assertNoCurrentTest();
 
-        if (TestRunner.shouldRun(skip))
+        const runner: MochaTestRunner = this;
+        test(testName, function()
         {
-            test(testName, () =>
+            if (TestRunner.shouldSkip(skip))
             {
-                const currentTest: Test = AssertTest.create();
-                this.setCurrentTest(currentTest);
-                try
-                {
-                    testAction(currentTest);
-                }
-                finally
-                {
-                    this.setCurrentTest(undefined);
-                }
-            });
-        }
+                this.skip();
+            }
+
+            const currentTest: Test = AssertTest.create();
+            runner.setCurrentTest(currentTest);
+            try
+            {
+                testAction(currentTest);
+            }
+            finally
+            {
+                runner.setCurrentTest(undefined);
+            }
+        });
     }
 
     public testAsync(testName: string, testAction: (test: Test) => Promise<unknown>): void;
