@@ -89,7 +89,7 @@ export class MochaTestRunner implements TestRunner
         {
             if (TestRunner.shouldSkip(skip))
             {
-                before(function()
+                this.beforeAll(function()
                 {
                     this.skip();
                 });
@@ -128,16 +128,18 @@ export class MochaTestRunner implements TestRunner
             {
                 this.skip();
             }
-
-            const currentTest: Test = AssertTest.create();
-            runner.setCurrentTest(currentTest);
-            try
+            else
             {
-                testAction(currentTest);
-            }
-            finally
-            {
-                runner.setCurrentTest(undefined);
+                const currentTest: Test = AssertTest.create();
+                runner.setCurrentTest(currentTest);
+                try
+                {
+                    testAction(currentTest);
+                }
+                finally
+                {
+                    runner.setCurrentTest(undefined);
+                }
             }
         });
     }
@@ -168,8 +170,10 @@ export class MochaTestRunner implements TestRunner
             {
                 this.skip();
             }
-
-            await testAction(AssertTest.create());
+            else
+            {
+                await testAction(AssertTest.create());
+            }
         });
     }
 
