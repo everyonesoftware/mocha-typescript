@@ -1,7 +1,7 @@
+import { PreConditionError } from "@everyonesoftware/base-typescript";
 import { Test, TestRunner } from "@everyonesoftware/test-typescript";
 import { AssertTest, MochaTestRunner } from "../sources";
 import { AssertionError } from "assert";
-import { PreConditionError } from "@everyonesoftware/base-typescript";
 
 export function test(runner: TestRunner): void
 {
