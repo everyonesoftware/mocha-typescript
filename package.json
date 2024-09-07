@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/everyonesoftware/mocha-typescript"
   },
-  "version": "7.0.0",
+  "version": "8.0.0",
   "module": "outputs/package/index.esm.js",
   "main": "outputs/package/index.js",
   "types": "outputs/package/index.d.ts",
@@ -20,18 +20,18 @@
   ],
   "scripts": {
     "build": "tsc && eslint sources tests --ext ts --max-warnings 0 && node ./package.js",
+    "clean": "rimraf outputs",
     "just-tests": "c8 mocha --spec=outputs/tests",
     "test": "npm run build && npm run just-tests"
   },
   "dependencies": {
-    "@everyonesoftware/base-typescript": "20.0.0",
-    "@everyonesoftware/test-typescript": "7.0.0",
+    "@everyonesoftware/base-typescript": "23.0.0",
+    "@everyonesoftware/test-typescript": "9.0.0",
+    "@types/mocha": "10.0.7",
     "assert": "2.1.0",
-    "mocha": "10.6.0"
+    "mocha": "10.7.3"
   },
   "devDependencies": {
-    "@types/assert": "1.5.10",
-    "@types/mocha": "10.0.7",
     "@types/node": "20.14.10",
     "@typescript-eslint/eslint-plugin": "7.15.0",
     "@typescript-eslint/parser": "7.15.0",
@@ -39,23 +39,27 @@
     "esbuild": "0.23.0",
     "eslint": "8.56.0",
     "npm-dts": "1.3.12",
+    "rimraf": "6.0.1",
     "source-map-support": "0.5.21",
     "typescript": "5.5.3"
   },
   "mocha": {
-      "color": true,
-      "ui": "tdd",
-      "spec": "./outputs/tests/**/*.js",
-      "extension": [
-          "js"
-      ],
-      "require": [
-          "source-map-support/register"
-      ]
+    "color": true,
+    "ui": "tdd",
+    "spec": "./outputs/tests/**/*.js",
+    "extension": [
+      "js"
+    ],
+    "require": [
+      "source-map-support/register"
+    ]
   },
   "c8": {
     "all": true,
-    "src": ["sources", "tests"],
+    "src": [
+      "sources",
+      "tests"
+    ],
     "temp-directory": "outputs/coverage-temp",
     "report-dir": "outputs/coverage",
     "reporter": [
