@@ -1,7 +1,7 @@
 import { Iterable, Pre, ToStringFunctions, Type, isFunction } from "@everyonesoftware/base-typescript";
 import { AssertTest } from "./assertTest";
 import { Test, TestRunner, TestRunner2, TestSkip } from "@everyonesoftware/test-typescript";
-import * as mocha from "mocha";
+import { beforeEach, suite, test } from "mocha";
 /**
  * A {@link TestRunner} implementation that passes through to mocha.
  */
@@ -99,13 +99,14 @@ export class MochaTestRunner implements TestRunner2
 
         this.assertNoCurrentTest();
 
-        mocha.describe(testGroupName, function()
+        const runner: MochaTestRunner = this;
+        suite(testGroupName, function()
         {
             if (TestRunner.shouldSkip(skip))
             {
-                mocha.beforeEach(function()
+                beforeEach(function()
                 {
-                    this.skip();
+                    runner.skip();
                 });
             }
 
@@ -136,7 +137,7 @@ export class MochaTestRunner implements TestRunner2
         this.assertNoCurrentTest();
 
         const runner: MochaTestRunner = this;
-        mocha.it(testName, function()
+        test(testName, function()
         {
             if (TestRunner.shouldSkip(skip))
             {
@@ -179,7 +180,7 @@ export class MochaTestRunner implements TestRunner2
         Pre.condition.assertNotUndefinedAndNotNull(testAction, "testAction");
 
         const runner: MochaTestRunner = this;
-        it(testName, async () =>
+        test(testName, async () =>
         {
             if (TestRunner.shouldSkip(skip))
             {
