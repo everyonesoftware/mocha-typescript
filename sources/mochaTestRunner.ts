@@ -1,30 +1,22 @@
 import { Iterable, Pre, ToStringFunctions, Type, isFunction } from "@everyonesoftware/base-typescript";
 import { AssertTest } from "./assertTest";
-import { Test, TestRunner, TestRunner2, TestSkip } from "@everyonesoftware/test-typescript";
+import { Test, TestRunner, TestSkip } from "@everyonesoftware/test-typescript";
 import { beforeEach, suite, test } from "mocha";
 /**
  * A {@link TestRunner} implementation that passes through to mocha.
  */
-export class MochaTestRunner implements TestRunner2
+export class MochaTestRunner implements TestRunner
 {
     private currentTest: Test | undefined;
     private toStringFunctions: ToStringFunctions;
 
-    protected constructor()
+    protected constructor(toStringFunctions?: ToStringFunctions)
     {
-        this.toStringFunctions = ToStringFunctions.create()
-            .addIterable()
-            .addMap();
-    }
-
-    public addToStringFunction<T>(matchFunction: (value: unknown) => value is T, toStringFunction: (value: T) => string): this
-    {
-        Pre.condition.assertNotUndefinedAndNotNull(matchFunction, "matchFunction");
-        Pre.condition.assertNotUndefinedAndNotNull(toStringFunction, "toStringFunction");
-
-        this.toStringFunctions.add(matchFunction, toStringFunction);
-        
-        return this;
+        if (!toStringFunctions)
+        {
+            toStringFunctions = ToStringFunctions.create();
+        }
+        this.toStringFunctions = toStringFunctions;
     }
 
     public static create(): MochaTestRunner
@@ -200,6 +192,6 @@ export class MochaTestRunner implements TestRunner2
 
     public toString(value: unknown): string
     {
-        return TestRunner.toString(this, value);
+        return this.toStringFunctions.toString(value);
     }
 }
