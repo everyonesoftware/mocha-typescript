@@ -1,7 +1,7 @@
 import { Iterable, Pre, ToStringFunctions, Type, isFunction } from "@everyonesoftware/base-typescript";
 import { AssertTest } from "./assertTest";
 import { Test, TestRunner, TestSkip } from "@everyonesoftware/test-typescript";
-import { beforeEach, suite, test } from "mocha";
+import * as mocha from "mocha";
 /**
  * A {@link TestRunner} implementation that passes through to mocha.
  */
@@ -19,9 +19,9 @@ export class MochaTestRunner implements TestRunner
         this.toStringFunctions = toStringFunctions;
     }
 
-    public static create(): MochaTestRunner
+    public static create(toStringFunctions?: ToStringFunctions): MochaTestRunner
     {
-        return new MochaTestRunner();
+        return new MochaTestRunner(toStringFunctions);
     }
 
     private getCurrentTest(): Test | undefined
@@ -91,14 +91,15 @@ export class MochaTestRunner implements TestRunner
 
         this.assertNoCurrentTest();
 
-        const runner: MochaTestRunner = this;
-        suite(testGroupName, function()
+        mocha.suite(testGroupName, function()
         {
             if (TestRunner.shouldSkip(skip))
             {
-                beforeEach(function()
+                mocha.beforeEach(function()
                 {
-                    runner.skip();
+                    // Calls the mocha skip() function instead of MochaTestRunner.skip().
+                    // https://mochajs.org/#inclusive-tests
+                    this.skip();
                 });
             }
 
@@ -129,11 +130,13 @@ export class MochaTestRunner implements TestRunner
         this.assertNoCurrentTest();
 
         const runner: MochaTestRunner = this;
-        test(testName, function()
+        mocha.test(testName, function()
         {
             if (TestRunner.shouldSkip(skip))
             {
-                runner.skip();
+                // Calls the mocha skip() function instead of MochaTestRunner.skip().
+                // https://mochajs.org/#inclusive-tests
+                this.skip();
             }
             else
             {
@@ -171,12 +174,13 @@ export class MochaTestRunner implements TestRunner
         }
         Pre.condition.assertNotUndefinedAndNotNull(testAction, "testAction");
 
-        const runner: MochaTestRunner = this;
-        test(testName, async () =>
+        mocha.test(testName, async function()
         {
             if (TestRunner.shouldSkip(skip))
             {
-                runner.skip();
+                // Calls the mocha skip() function instead of MochaTestRunner.skip().
+                // https://mochajs.org/#inclusive-tests
+                this.skip();
             }
             else
             {
@@ -187,6 +191,8 @@ export class MochaTestRunner implements TestRunner
 
     public andList(values: unknown[] | Iterable<unknown>): string
     {
+        Pre.condition.assertNotUndefinedAndNotNull(values, "values");
+
         return TestRunner.andList(this, values);
     }
 

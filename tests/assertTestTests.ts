@@ -147,6 +147,204 @@ export function test(runner: TestRunner): void
 
                 assertNullTest(null);
             });
+
+            runner.testFunction("assertNotNull(unknown)", () =>
+            {
+                function assertNotNullErrorTest(value: unknown, expected: Error): void
+                {
+                    runner.test(`with ${runner.toString(value)}`, (test: Test) =>
+                    {
+                        const assertTest: AssertTest = AssertTest.create();
+                        test.assertThrows(() => assertTest.assertNotNull(value), expected);
+                    });
+                }
+
+                assertNotNullErrorTest(null, new AssertionError({
+                    actual: null,
+                    expected: null,
+                    operator: "notStrictEqual",
+                }));
+
+                function assertNotNullTest(value: unknown): void
+                {
+                    runner.test(`with ${runner.toString(value)}`, (_test: Test) =>
+                    {
+                        const assertTest: AssertTest = AssertTest.create();
+                        assertTest.assertNotNull(value);
+                    });
+                }
+
+                assertNotNullTest(undefined);
+                assertNotNullTest("");
+                assertNotNullTest(500);
+            });
+
+            runner.testFunction("assertNotUndefinedAndNotNull(unknown)", () =>
+            {
+                function assertNotUndefinedAndNotNullErrorTest(value: unknown, expected: Error): void
+                {
+                    runner.test(`with ${runner.toString(value)}`, (test: Test) =>
+                    {
+                        const assertTest: AssertTest = AssertTest.create();
+                        test.assertThrows(() => assertTest.assertNotUndefinedAndNotNull(value), expected);
+                    });
+                }
+
+                assertNotUndefinedAndNotNullErrorTest(undefined, new AssertionError({
+                    actual: undefined,
+                    operator: "notStrictEqual",
+                }));
+                assertNotUndefinedAndNotNullErrorTest(null, new AssertionError({
+                    actual: null,
+                    expected: null,
+                    operator: "notStrictEqual",
+                }));
+
+                function assertNotUndefinedAndNotNullTest(value: unknown): void
+                {
+                    runner.test(`with ${runner.toString(value)}`, (_test: Test) =>
+                    {
+                        const assertTest: AssertTest = AssertTest.create();
+                        assertTest.assertNotUndefinedAndNotNull(value);
+                    });
+                }
+
+                assertNotUndefinedAndNotNullTest("");
+                assertNotUndefinedAndNotNullTest(500);
+            });
+
+            runner.testFunction("assertSame<T>(T,T)", () =>
+            {
+                function assertSameErrorTest<T>(left: T, right: T, expected: Error): void
+                {
+                    runner.test(`with ${runner.andList([left, right])}`, (test: Test) =>
+                    {
+                        const assertTest: AssertTest = AssertTest.create();
+                        test.assertThrows(() => assertTest.assertSame(left, right), expected);
+                    });
+                }
+
+                assertSameErrorTest(undefined, null, new AssertionError({
+                    actual: undefined,
+                    expected: null,
+                    operator: "strictEqual",
+                }));
+                assertSameErrorTest(undefined, 5, new AssertionError({
+                    actual: undefined,
+                    expected: 5,
+                    operator: "strictEqual",
+                }));
+                assertSameErrorTest(undefined, "hello", new AssertionError({
+                    actual: undefined,
+                    expected: "hello",
+                    operator: "strictEqual",
+                }));
+                
+                assertSameErrorTest(null, undefined, new AssertionError({
+                    actual: null,
+                    expected: undefined,
+                    operator: "strictEqual",
+                }));
+                assertSameErrorTest(null, 5, new AssertionError({
+                    actual: null,
+                    expected: 5,
+                    operator: "strictEqual",
+                }));
+                assertSameErrorTest(null, "hello", new AssertionError({
+                    actual: null,
+                    expected: "hello",
+                    operator: "strictEqual",
+                }));
+                
+                assertSameErrorTest(new String("hello"), new String("hello"), new AssertionError({
+                    actual: new String("hello"),
+                    expected: new String("hello"),
+                    operator: "strictEqual",
+                }));
+
+                assertSameErrorTest({}, {}, new AssertionError({
+                    actual: {},
+                    expected: {},
+                    operator: "strictEqual",
+                }));
+
+                function assertSameTest<T>(left: T, right: T): void
+                {
+                    runner.test(`with ${runner.andList([left, right])}`, (_: Test) =>
+                    {
+                        const assertTest: AssertTest = AssertTest.create();
+                        assertTest.assertSame(left, right);
+                    });
+                }
+
+                assertSameTest(undefined, undefined);
+                assertSameTest(null, null);
+                assertSameTest(false, false);
+                assertSameTest(true, true);
+                assertSameTest(51, 51);
+                assertSameTest("abc", "abc");
+            });
+
+            runner.testFunction("assertNotSame<T>(T,T)", () =>
+            {
+                function assertNotSameErrorTest<T>(left: T, right: T, expected: Error): void
+                {
+                    runner.test(`with ${runner.andList([left, right])}`, (test: Test) =>
+                    {
+                        const assertTest: AssertTest = AssertTest.create();
+                        test.assertThrows(() => assertTest.assertNotSame(left, right), expected);
+                    });
+                }
+
+                assertNotSameErrorTest(undefined, undefined, new AssertionError({
+                    actual: undefined,
+                    expected: undefined,
+                    operator: "notStrictEqual",
+                }));
+                assertNotSameErrorTest(null, null, new AssertionError({
+                    actual: null,
+                    expected: null,
+                    operator: "notStrictEqual",
+                }));
+                assertNotSameErrorTest(false, false, new AssertionError({
+                    actual: false,
+                    expected: false,
+                    operator: "notStrictEqual",
+                }));
+                assertNotSameErrorTest(true, true, new AssertionError({
+                    actual: true,
+                    expected: true,
+                    operator: "notStrictEqual",
+                }));
+                assertNotSameErrorTest(51, 51, new AssertionError({
+                    actual: 51,
+                    expected: 51,
+                    operator: "notStrictEqual",
+                }));
+                assertNotSameErrorTest("abc", "abc", new AssertionError({
+                    actual: "abc",
+                    expected: "abc",
+                    operator: "notStrictEqual",
+                }));
+
+                function assertNotSameTest<T>(left: T, right: T): void
+                {
+                    runner.test(`with ${runner.andList([left, right])}`, (_: Test) =>
+                    {
+                        const assertTest: AssertTest = AssertTest.create();
+                        assertTest.assertNotSame(left, right);
+                    });
+                }
+
+                assertNotSameTest(undefined, null);
+                assertNotSameTest(undefined, 5);
+                assertNotSameTest(undefined, "hello");
+                assertNotSameTest(null, undefined);
+                assertNotSameTest(null, 5);
+                assertNotSameTest(null, "hello");
+                assertNotSameTest(new String("hello"), new String("hello"));
+                assertNotSameTest({}, {});
+            });
         });
     });
 }
