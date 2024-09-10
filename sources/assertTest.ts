@@ -43,7 +43,7 @@ export class AssertTest implements Test
 
     public assertNotNull<T>(value: T): asserts value is NonNullable<T>
     {
-        Test.assertNull(this, value);
+        Test.assertNotNull(this, value);
     }
 
     public assertNotUndefinedAndNotNull<T>(value: T): asserts value is NonNullable<T>
