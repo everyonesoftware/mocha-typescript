@@ -31,6 +31,7 @@ const sharedConfig = {
   bundle: true,
   minify: true,
   external: external,
+  sourcemap: "inline",
 };
 
 build({
