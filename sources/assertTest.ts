@@ -1,13 +1,11 @@
-import { isUndefinedOrNull, Pre } from "@everyonesoftware/base-typescript";
-import { Type } from "@everyonesoftware/base-typescript/sources/index";
+import { isUndefinedOrNull, Pre, Type } from "@everyonesoftware/base-typescript";
 import { Test } from "@everyonesoftware/test-typescript";
-import { Test2 } from "@everyonesoftware/test-typescript/sources/test2";
 import * as assert from "assert";
 
 /**
  * A {@link Test} type that uses the standard "assert" module to make assertions.
  */
-export class AssertTest implements Test, Test2
+export class AssertTest implements Test
 {
     protected constructor()
     {
