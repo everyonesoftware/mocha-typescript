@@ -1,11 +1,13 @@
-import { Pre } from "@everyonesoftware/base-typescript";
+import { isUndefinedOrNull, Pre } from "@everyonesoftware/base-typescript";
+import { Type } from "@everyonesoftware/base-typescript/sources/index";
 import { Test } from "@everyonesoftware/test-typescript";
+import { Test2 } from "@everyonesoftware/test-typescript/sources/test2";
 import * as assert from "assert";
 
 /**
  * A {@link Test} type that uses the standard "assert" module to make assertions.
  */
-export class AssertTest implements Test
+export class AssertTest implements Test, Test2
 {
     protected constructor()
     {
@@ -89,5 +91,20 @@ export class AssertTest implements Test
     public async assertThrowsAsync(action: () => Promise<unknown>, expectedError: Error): Promise<void>
     {
         await assert.rejects(action, expectedError);
+    }
+
+    public assertInstanceOf<T>(value: unknown, type: Type<T>, typeCheck?: (value: unknown) => value is T): asserts value is T
+    {
+        Pre.condition.assertNotUndefinedAndNotNull(type, "type");
+
+        if (isUndefinedOrNull(typeCheck))
+        {
+            typeCheck = ((value: unknown) => value instanceof type) as (value: unknown) => value is T;
+        }
+
+        if (!typeCheck(value))
+        {
+            assert.fail(`Expected value to be of type ${type.name} but found ${value} instead.`);
+        }
     }
 }
