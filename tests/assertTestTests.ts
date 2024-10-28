@@ -1,4 +1,4 @@
-import { PreConditionError } from "@everyonesoftware/base-typescript";
+import { isNumber, isString, PreConditionError } from "@everyonesoftware/base-typescript";
 import { Test, TestRunner } from "@everyonesoftware/test-typescript";
 import { AssertTest } from "../sources";
 import { createTestRunner } from "./tests";
@@ -344,6 +344,89 @@ export function test(runner: TestRunner): void
                 assertNotSameTest(null, "hello");
                 assertNotSameTest(new String("hello"), new String("hello"));
                 assertNotSameTest({}, {});
+            });
+
+            runner.testFunction("assertInstanceOf<T>(unknown,Type<T>,undefined|((value: unknown) => value is T))", () =>
+            {
+                runner.test("with undefined type", (test: Test) =>
+                {
+                    const assertTest: AssertTest = AssertTest.create();
+                    test.assertThrows(
+                        () => assertTest.assertInstanceOf(50, undefined!),
+                        new PreConditionError(
+                            "Expression: type",
+                            "Expected: not undefined and not null",
+                            "Actual: undefined",
+                        ),
+                    );
+                });
+
+                runner.test("with null type", (test: Test) =>
+                {
+                    const assertTest: AssertTest = AssertTest.create();
+                    test.assertThrows(
+                        () => assertTest.assertInstanceOf(50, null!),
+                        new PreConditionError(
+                            "Expression: type",
+                            "Expected: not undefined and not null",
+                            "Actual: null",
+                        ),
+                    );
+                });
+
+                runner.test("with non-matching string type and type check function", (test: Test) =>
+                {
+                    const assertTest: AssertTest = AssertTest.create();
+                    test.assertThrows(
+                        () => assertTest.assertInstanceOf(true, String, isString),
+                        new AssertionError({
+                            operator: "fail",
+                            message: "Expected value to be of type String but found true instead.",
+                        }),
+                    );
+                });
+
+                runner.test("with non-matching number type and type check function", (test: Test) =>
+                {
+                    const assertTest: AssertTest = AssertTest.create();
+                    test.assertThrows(
+                        () => assertTest.assertInstanceOf(false, Number, isNumber),
+                        new AssertionError({
+                            operator: "fail",
+                            message: "Expected value to be of type Number but found false instead.",
+                        }),
+                    );
+                });
+
+                runner.test("with non-matching AssertTest type and no type check function", (test: Test) =>
+                {
+                    const assertTest: AssertTest = AssertTest.create();
+                    test.assertThrows(
+                        () => assertTest.assertInstanceOf("hello", AssertTest),
+                        new AssertionError({
+                            operator: "fail",
+                            message: "Expected value to be of type AssertTest but found hello instead.",
+                        }),
+                    );
+                });
+
+                runner.test("with matching string type and type check function", (_: Test) =>
+                {
+                    const assertTest: AssertTest = AssertTest.create();
+                    assertTest.assertInstanceOf("hello", String, isString);
+                });
+
+                runner.test("with matching number type and type check function", (_: Test) =>
+                {
+                    const assertTest: AssertTest = AssertTest.create();
+                    assertTest.assertInstanceOf(50, Number, isNumber);
+                });
+
+                runner.test("with matching AssertTest type and no type check function", (_: Test) =>
+                {
+                    const assertTest: AssertTest = AssertTest.create();
+                    assertTest.assertInstanceOf(assertTest, AssertTest);
+                });
             });
         });
     });
