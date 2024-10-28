@@ -1,4 +1,4 @@
-import { isUndefinedOrNull, Pre, Type } from "@everyonesoftware/base-typescript";
+import { Pre, Type } from "@everyonesoftware/base-typescript";
 import { Test } from "@everyonesoftware/test-typescript";
 import * as assert from "assert";
 
@@ -93,16 +93,6 @@ export class AssertTest implements Test
 
     public assertInstanceOf<T>(value: unknown, type: Type<T>, typeCheck?: (value: unknown) => value is T): asserts value is T
     {
-        Pre.condition.assertNotUndefinedAndNotNull(type, "type");
-
-        if (isUndefinedOrNull(typeCheck))
-        {
-            typeCheck = ((value: unknown) => value instanceof type) as (value: unknown) => value is T;
-        }
-
-        if (!typeCheck(value))
-        {
-            assert.fail(`Expected value to be of type ${type.name} but found ${value} instead.`);
-        }
+        Test.assertInstanceOf(this, value, type, typeCheck);
     }
 }
